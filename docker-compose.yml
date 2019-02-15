@@ -44,8 +44,6 @@ services:
     volumes:
       - /box
 
-
-
 volumes:
   redis:
   postgres:

@@ -62,6 +62,19 @@ RSpec.describe CampaignsController, type: :controller do
          end
        end
 
+       it "Create campaign with right attributes" do
+         request.env["devise.mapping"] = Devise.mappings[:user]
+         current_user = FactoryBot.create(:user)
+         sign_in current_user
+         campaign_attributes = attributes_for(:campaign, user: current_user)
+         post :create, params: {campaign: campaign_attributes}
+
+         expect(Campaign.last.user).to eql(current_user)
+         expect(Campaign.last.title).to eql(campaign_attributes[:title])
+         expect(Campaign.last.description).to eql(campaign_attributes[:description])
+         expect(Campaign.last.status).to eql(campaign_attributes[:status])
+       end
+
      end
    end
 

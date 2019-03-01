@@ -75,6 +75,16 @@ RSpec.describe CampaignsController, type: :controller do
          expect(Campaign.last.status).to eql(campaign_attributes[:status])
        end
 
+       it "Create campaign with owner associated as a member" do
+         request.env["devise.mapping"] = Devise.mappings[:user]
+         current_user = FactoryBot.create(:user)
+         sign_in current_user
+         campaign_attributes = attributes_for(:campaign, user: current_user)
+         post :create, params: {campaign: campaign_attributes}
+
+         expect(Campaign.last.members.last.name).to eql(current_user.name)
+         expect(Campaign.last.members.last.email).to eql(current_user.email)
+       end
      end
    end
 

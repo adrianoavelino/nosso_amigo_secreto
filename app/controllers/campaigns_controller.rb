@@ -10,6 +10,14 @@ class CampaignsController < ApplicationController
   end
 
   def create
+    @campaign = Campaign.new(campaign_params)
+    respond_to do |format|
+      if @campaign.save
+        format.html {redirect_to "/campaigns/#{@campaign.id}"}
+      else
+        format.html { redirect_to main_app.root_url, notice: @campaign.erros }
+      end
+    end
   end
 
   def update
@@ -19,6 +27,11 @@ class CampaignsController < ApplicationController
   end
 
   def raffle
+  end
+
+  private
+  def campaign_params
+    params.require(:campaign).permit(:title, :description, :status).merge(user: current_user)
   end
 
   def set_campaign

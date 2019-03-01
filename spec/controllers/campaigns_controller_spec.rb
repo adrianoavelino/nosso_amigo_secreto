@@ -49,6 +49,19 @@ RSpec.describe CampaignsController, type: :controller do
          end
        end
 
+       describe 'POST #create' do
+         it 'Redirect to new campaign' do
+           request.env["devise.mapping"] = Devise.mappings[:user]
+           current_user = FactoryBot.create(:user)
+           sign_in current_user
+           campaign_attributes = attributes_for(:campaign, user: current_user)
+           post :create, params: {campaign: campaign_attributes}
+
+           expect(response).to have_http_status(302)
+           expect(response).to redirect_to("/campaigns/#{Campaign.last.id}")
+         end
+       end
+
      end
    end
 

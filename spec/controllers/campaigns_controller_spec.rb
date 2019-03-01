@@ -26,6 +26,29 @@ RSpec.describe CampaignsController, type: :controller do
            expect(response).to have_http_status(:success)
          end
        end
+
+       context 'User is not owner of campaign' do
+         it 'Redirects to root' do
+           request.env["devise.mapping"] = Devise.mappings[:user]
+           current_user = FactoryBot.create(:user)
+           sign_in current_user
+           campaign = create(:campaign)
+           get(:show, params: {id:campaign.id})
+           expect(response).to redirect_to('/')
+         end
+       end
+
+       context 'campaign don\'t exists' do
+         it 'redirects to root' do
+           request.env["devise.mapping"] = Devise.mappings[:user]
+           current_user = FactoryBot.create(:user)
+
+           sign_in current_user
+           get :show, params: {id: 0}
+           expect(response).to redirect_to('/')
+         end
+       end
+
      end
    end
 

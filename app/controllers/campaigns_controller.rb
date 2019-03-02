@@ -1,7 +1,7 @@
 class CampaignsController < ApplicationController
   before_action :authenticate_user!
-  before_action :set_campaign, only: [:show]
-  before_action :is_owner?, only: [:show]
+  before_action :set_campaign, only: [:show, :destroy]
+  before_action :is_owner?, only: [:show, :destroy]
 
   def show
   end
@@ -24,6 +24,10 @@ class CampaignsController < ApplicationController
   end
 
   def destroy
+    @campaign.destroy
+    respond_to do |format|
+      format.json {render json: true}
+    end
   end
 
   def raffle

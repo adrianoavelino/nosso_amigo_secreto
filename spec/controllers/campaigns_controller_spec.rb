@@ -68,4 +68,44 @@ RSpec.describe CampaignsController, type: :controller do
     end
   end
 
+  describe 'DELETE #destroy' do
+    before(:each) do
+      request.env['HTTP_ACCEPT'] = 'application/json'
+    end
+
+    context 'User is the Campaign Owner' do
+      before(:each) do
+        @campaign = create(:campaign, user: @current_user)
+      end
+      it 'returns http success' do
+        delete :destroy, params: {id: @campaign.id}
+        expect(response).to have_http_status(:success)
+      end
+
+      it 'delete campaign from database' do
+        amountCampaign = Campaign.all.count
+        expect(amountCampaign).to eq(1)
+        delete :destroy, params: {id: @campaign.id}
+        expect(Campaign.all.count).to eq(0)
+      end
+    end
+
+    context 'User isn\'t the Campaign Owner' do
+      it 'returns http forbidden' do
+        campaign = create(:campaign)
+        delete :destroy, params: {id: campaign.id}
+        expect(response).to have_http_status(:forbidden)
+      end
+
+      it 'don\'t delete campaign from database' do
+        campaign = create(:campaign)
+        amountCampaign = Campaign.all.count
+
+        expect(amountCampaign).to eq(1)
+        delete :destroy, params: {id: campaign.id}
+        expect(Campaign.all.count).to eq(1)
+      end
+    end
+  end
+
 end

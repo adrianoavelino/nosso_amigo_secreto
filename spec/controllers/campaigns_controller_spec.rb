@@ -106,6 +106,48 @@ RSpec.describe CampaignsController, type: :controller do
         expect(Campaign.all.count).to eq(1)
       end
     end
+
+  end
+
+  context 'PUT #update' do
+    before(:each) do
+      @new_campaign_attributes = attributes_for(:campaign)
+      request.env['HTTP_ACCEPT'] = 'application/json'
+    end
+
+    context 'User is the Campaign Owner' do
+      before(:each) do
+        @campaign = create(:campaign, user: @current_user)
+      end
+
+      it 'returns http success' do
+        put :update, params: { id: @campaign.id, campaign: @new_campaign_attributes }
+        expect(response).to have_http_status(:success)
+      end
+
+      it 'Campaign has updated attributes' do
+        put :update, params: { id: @campaign.id, campaign: @new_campaign_attributes }
+        expect(Campaign.last.title).to eq(@new_campaign_attributes[:title])
+        expect(Campaign.last.description).to eq(@new_campaign_attributes[:description])
+      end
+    end
+
+    context 'User isn\'t the Campaign Owner' do
+      it 'returns http forbidden' do
+        user = create(:user)
+        campaign = create(:campaign)
+        put :update, params: { id: campaign.id, campaign: @new_campaign_attributes }
+        expect(response).to have_http_status(:forbidden)
+      end
+
+      it 'Campaign don\'t has updated attributes' do
+        user = create(:user)
+        campaign = create(:campaign)
+        put :update, params: { id: campaign.id, campaign: @new_campaign_attributes }
+        expect(Campaign.last.title).not_to eq(@new_campaign_attributes[:title])
+        expect(Campaign.last.description).not_to eq(@new_campaign_attributes[:description])
+      end
+    end
   end
 
 end

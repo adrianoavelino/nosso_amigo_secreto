@@ -1,7 +1,7 @@
 class CampaignsController < ApplicationController
   before_action :authenticate_user!
-  before_action :set_campaign, only: [:show, :destroy]
-  before_action :is_owner?, only: [:show, :destroy]
+  before_action :set_campaign, only: [:show, :destroy, :update]
+  before_action :is_owner?, only: [:show, :destroy, :update]
 
   def show
   end
@@ -21,6 +21,13 @@ class CampaignsController < ApplicationController
   end
 
   def update
+    respond_to do |format|
+      if @campaign.update(campaign_params)
+        format.json { render json: true }
+      else
+        format.json { render json: @campaign.errors, status: :unprocessable_entity}
+      end
+    end
   end
 
   def destroy

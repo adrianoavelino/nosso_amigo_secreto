@@ -150,4 +150,55 @@ RSpec.describe CampaignsController, type: :controller do
     end
   end
 
+  describe 'GET #raffle' do
+    before(:each) do
+      request.env['HTTP_ACCEPT'] = 'application/json'
+    end
+
+    context 'User is the Campaign Owner' do
+      before(:each) do
+        @campaign = create(:campaign, user: @current_user)
+      end
+
+      context 'Has more than two members' do
+        it 'return success' do
+          create(:member, campaign: @campaign)
+          create(:member, campaign: @campaign)
+          create(:member, campaign: @campaign)
+          post :raffle, params: { id: @campaign.id }
+          expect(response).to have_http_status(:success)
+          expect(response.parsed_body).to match('true')
+        end
+      end
+
+      context 'No more than two members' do
+        it 'returns http unprocessable_entity' do
+          create(:member, campaign: @campaign)
+          post :raffle, params: { id: @campaign.id }
+          expect(response).to have_http_status(:unprocessable_entity)
+          expect(response.parsed_body).to match('A campanha precisa de pelo menos 3 pessoas')
+        end
+      end
+
+      context 'The Campaign has been finished' do
+        it 'return http unprocessable_entity' do
+          campaign = create(:campaign, status: 1, user: @current_user)
+          post :raffle, params: { id: campaign.id }
+          expect(response).to have_http_status(:unprocessable_entity)
+          expect(response.parsed_body).to match('Já foi sorteada')
+        end
+      end
+    end
+
+    context 'User isn\'t the Campaign Owner' do
+      it 'return http forbidden' do
+        user = create(:user)
+        campaign = create(:campaign, user: user)
+        post :raffle, params: { id: campaign.id }
+        expect(response).to have_http_status(:forbidden)
+        expect(response.parsed_body).to match('false')
+      end
+    end
+
+  end
 end

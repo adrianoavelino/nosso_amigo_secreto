@@ -1,7 +1,7 @@
 class CampaignsController < ApplicationController
   before_action :authenticate_user!
-  before_action :set_campaign, only: [:show, :destroy, :update]
-  before_action :is_owner?, only: [:show, :destroy, :update]
+  before_action :set_campaign, only: [:show, :destroy, :update, :raffle]
+  before_action :is_owner?, only: [:show, :destroy, :update, :raffle]
 
   def show
   end
@@ -38,6 +38,18 @@ class CampaignsController < ApplicationController
   end
 
   def raffle
+    respond_to do |format|
+      msgError = 'Já foi sorteada'
+      if @campaign.status != 0
+        format.json { render json: msgError, status: :unprocessable_entity }
+      elsif @campaign.members.count < 3
+        msgError = 'A campanha precisa de pelo menos 3 pessoas'
+        format.json { render json: msgError, status: :unprocessable_entity }
+      else
+        # CampaignRaffleJob.perform_later @campaign
+        format.json { render json: true }
+      end
+    end
   end
 
   private

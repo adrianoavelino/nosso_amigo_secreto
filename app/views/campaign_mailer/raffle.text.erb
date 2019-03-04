@@ -1,3 +1,5 @@
-Campaign#raffle
-
-<%= @greeting %>, find me in app/views/campaign_mailer/raffle.text.erb
+<%= @campaign.title %>
+<%= @member.email %>
+<%= @member.name %>
+<%= @campaign.user.name %>
+<%= "/members/#{@member.token}/opened" %>

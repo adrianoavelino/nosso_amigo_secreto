@@ -51,15 +51,15 @@ RSpec.describe CampaignsController, type: :controller do
     end
 
     it 'Redirect to new campaign' do
-     expect(response).to have_http_status(302)
-     expect(response).to redirect_to("/campaigns/#{Campaign.last.id}")
+      expect(response).to have_http_status(302)
+      expect(response).to redirect_to("/campaigns/#{Campaign.last.id}")
     end
 
     it "Create campaign with right attributes" do
      expect(Campaign.last.user).to eql(@current_user)
      expect(Campaign.last.title).to eql(@campaign_attributes[:title])
      expect(Campaign.last.description).to eql(@campaign_attributes[:description])
-     expect(Campaign.last.status).to eql(@campaign_attributes[:status])
+     expect(Campaign.last.status).to match('pending')
     end
 
     it "Create campaign with owner associated as a member" do
@@ -182,8 +182,10 @@ RSpec.describe CampaignsController, type: :controller do
 
       context 'The Campaign has been finished' do
         it 'return http unprocessable_entity' do
-          campaign = create(:campaign, status: 1, user: @current_user)
-          post :raffle, params: { id: campaign.id }
+          @campaign.status = :finished
+          @campaign.save
+          post :raffle, params: { id: @campaign.id }
+          
           expect(response).to have_http_status(:unprocessable_entity)
           expect(response.parsed_body).to match('Já foi sorteada')
         end

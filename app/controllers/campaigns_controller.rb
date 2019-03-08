@@ -7,6 +7,7 @@ class CampaignsController < ApplicationController
   end
 
   def index
+    @campaigns = current_user.campaigns
   end
 
   def create
@@ -15,7 +16,7 @@ class CampaignsController < ApplicationController
       if @campaign.save
         format.html {redirect_to "/campaigns/#{@campaign.id}"}
       else
-        format.html { redirect_to main_app.root_url, notice: @campaign.erros }
+        format.html { redirect_to main_app.root_url, notice: @campaign.errors }
       end
     end
   end
@@ -40,7 +41,7 @@ class CampaignsController < ApplicationController
   def raffle
     respond_to do |format|
       msgError = 'Já foi sorteada'
-      if @campaign.status != 0
+      if @campaign.status != 'pending'
         format.json { render json: msgError, status: :unprocessable_entity }
       elsif @campaign.members.count < 3
         msgError = 'A campanha precisa de pelo menos 3 pessoas'
@@ -53,6 +54,10 @@ class CampaignsController < ApplicationController
   end
 
   private
+  def set_campaign
+    @campaign = Campaign.find(params[:id])
+  end
+
   def campaign_params
     params.require(:campaign).permit(:title, :description, :status).merge(user: current_user)
   end

@@ -132,4 +132,57 @@ RSpec.describe MembersController, type: :controller do
     end
   end
 
+  describe 'PUT #update' do
+    before(:each) do
+      request.env['HTTP_ACCEPT'] = 'application/json'
+    end
+    context 'As Logged User' do
+      context 'User is the Campaign\'s Owner' do
+        before(:each) do
+          @campaign = create(:campaign, user: @current_user)
+          @member = create(:member, campaign_id: @campaign.id)
+          @member_updated = attributes_for(:member, campaign_id: @campaign.id)
+          sign_in @current_user
+          put :update, params: { id: @member.id, member: @member_updated }
+        end
+
+        it 'return success' do
+          expect(response).to have_http_status(:success)
+        end
+
+        it 'member has updated attributes' do
+          expect(Member.last.name).to eq(@member_updated[:name])
+          expect(Member.last.email).to eq(@member_updated[:email])
+        end
+      end
+
+      context 'User isn\'t the Campaign Owner' do
+        before(:each) do
+          @campaign = create(:campaign, user: @current_user)
+          @member = create(:member)
+          @member_updated = attributes_for(:member, campaign_id: @campaign.id)
+          sign_in @current_user
+          put :update, params: { id: @member.id, member: @member_updated }
+        end
+
+        it 'return http forbidden to response json' do
+          expect(response).to have_http_status(:forbidden)
+        end
+      end
+    end
+
+    context 'As User not Logged in' do
+      before(:each) do
+        @campaign = create(:campaign, user: @current_user)
+        @member = create(:member, campaign: @campaign)
+        @member_updated = attributes_for(:member, campaign_id: @campaign.id)
+        put :update, params: { id: @member.id, member: @member_updated }
+      end
+
+      it 'return http unauthorized' do
+        expect(response).to have_http_status(:unauthorized)
+      end
+    end
+  end
+
 end

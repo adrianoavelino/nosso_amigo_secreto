@@ -1,7 +1,7 @@
 class MembersController < ApplicationController
   before_action :authenticate_user!, except: [:opened]
-  before_action :set_member, only: [:destroy]
-  before_action :is_owner?, only: [:destroy]
+  before_action :set_member, only: [:update, :destroy]
+  before_action :is_owner?, only: [:update, :destroy]
 
   def create
     @member = Member.new(member_params)
@@ -29,6 +29,13 @@ class MembersController < ApplicationController
   end
 
   def update
+    respond_to do |format|
+      if @member.update(member_params)
+        format.json { render json: true }
+      else
+        format.json { render json: @member.errors, status: :unprocessable_entity }
+      end
+    end
   end
 
   def member_params

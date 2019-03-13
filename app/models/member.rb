@@ -1,5 +1,6 @@
 class Member < ApplicationRecord
   belongs_to :campaign
+  before_save :set_email_like_not_opened
   after_save :set_campaign_pending
   validates :name, :email, :campaign, presence: true
 
@@ -15,5 +16,9 @@ class Member < ApplicationRecord
   protected
   def set_campaign_pending
     self.campaign.update(status: :pending)
+  end
+
+  def set_email_like_not_opened
+    self.open = false if self.new_record?
   end
 end

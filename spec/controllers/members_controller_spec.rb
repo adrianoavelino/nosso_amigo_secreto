@@ -185,4 +185,23 @@ RSpec.describe MembersController, type: :controller do
     end
   end
 
+  describe 'OPENED' do
+    before(:each) do
+      request.env['HTTP_ACCEPT'] = 'application/json'
+    end
+
+    it 'return success' do
+      member =  create(:member)
+      get :opened, params: {token: member.token }
+      expect(response).to have_http_status(:success)
+    end
+
+    it 'change attribute open to true' do
+      member = create(:member)
+      expect {
+        get :opened, params: {token: member.token }
+      }.to change{Member.last.open}.from(false).to(true)
+    end
+  end
+
 end

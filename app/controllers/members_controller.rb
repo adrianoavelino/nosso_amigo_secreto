@@ -2,6 +2,7 @@ class MembersController < ApplicationController
   before_action :authenticate_user!, except: [:opened]
   before_action :set_member, only: [:update, :destroy]
   before_action :is_owner?, only: [:update, :destroy]
+  before_action :set_member_by_token, only: [:opened]
 
   def create
     @member = Member.new(member_params)
@@ -38,6 +39,12 @@ class MembersController < ApplicationController
     end
   end
 
+  def opened
+    @member.update(open: true)
+    gif = Base64.decode64("R0lGODlhAQABAPAAAAAAAAAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw==")
+    render plain: gif, type: 'image/gif'
+  end
+
   def member_params
     params.require(:member).permit(:name, :email, :campaign_id)
   end
@@ -52,6 +59,10 @@ class MembersController < ApplicationController
 
   def set_member
     @member = Member.find(params[:id])
+  end
+
+  def set_member_by_token
+    @member = Member.find_by!(token: params[:token])
   end
 
 end

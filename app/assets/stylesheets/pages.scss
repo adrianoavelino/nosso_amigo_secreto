@@ -1,3 +1,31 @@
-// Place all the styles related to the Pages controller here.
-// They will automatically be included in application.css.
-// You can use Sass (SCSS) here: http://sass-lang.com/
+.home{
+  margin-top: 15%;
+  .title {
+    font-size: 2.28rem;
+    line-height: 110%;
+    margin: 1.52rem 0 0.912rem 0;
+  }
+  .subtitle, .subtitle2 {
+    font-size: 1.64rem;
+    line-height: 110%;
+    margin: 1.0933333333rem 0 0.656rem 0;
+  }
+  .home-icon{
+    color: #e86252;
+    font-size: 24px;
+  }
+  .home-button{
+    background-color: #e86252;
+    input {
+      color: #fff;
+    }
+  }
+  .subtitle{
+    color: #aaa;
+    margin-bottom: 30px;
+  }
+  .subtitle2{
+    color: #e86252;
+    margin-bottom: 40px;
+  }
+}

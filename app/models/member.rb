@@ -1,7 +1,7 @@
 class Member < ApplicationRecord
   belongs_to :campaign
+  after_destroy :set_campaign_pending
   before_save :set_email_like_not_opened
-  after_save :set_campaign_pending
   validates :name, :email, :campaign, presence: true
 
   def set_pixel

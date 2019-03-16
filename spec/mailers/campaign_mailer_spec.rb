@@ -24,7 +24,7 @@ RSpec.describe CampaignMailer, type: :mailer do
     end
 
     it 'body have member link o set open' do
-      expect(@mail.body.encoded).to match("/members/#{@member.token}/opened")
+      expect(@mail.body.encoded).to match(/members\/[\s\w=]*\/opened/)
     end
   end
 

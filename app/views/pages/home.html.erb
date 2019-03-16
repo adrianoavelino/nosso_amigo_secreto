@@ -4,8 +4,13 @@
     <h3 class="subtitle">Crie a sua brincadeira apenas com o nome e email dos seus amigos</h3>
     <h3 class="subtitle2">Rápido, fácil e garantido <i class="material-icons home-icon">favorite</i></h3>
 
-    <%= form_tag("/campaigns", method: "post") do %>
-      <%= submit_tag("Criar Agora", class: "waves-effect waves-light btn home-button") %>
-    <% end %>
+     <%= form_for(Campaign.new) do |f| %>
+        <%= f.hidden_field :id %>
+        <%= f.hidden_field :user_id, value: current_user.id %>
+        <%= f.hidden_field :title, value: 'Nova Campanha' %>
+        <%= f.hidden_field :description, value: 'Descreva a sua Campanha' %>
+       <%= submit_tag("Criar Agora", class: "waves-effect waves-light btn home-button") %>
+     <% end %>
+
   </div>
 </div>

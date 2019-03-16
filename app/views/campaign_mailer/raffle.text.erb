@@ -1,5 +1,13 @@
+Nosso Amigo Secreto
 <%= @campaign.title %>
-<%= @member.email %>
-<%= @member.name %>
-<%= @campaign.user.name %>
-<%= "/members/#{@member.token}/opened" %>
+
+<%= @campaign.description %>
+
+Olá <%= @member.name %>, o <%= @campaign.user.name %> criou uma campanha de amigo secreto no site Nosso Amigo Secreto e incluiu você. Logo a baixo voce pode saber com querm saiu.
+
+Seu amigo secreto é: <%= @friend.name %> (<%= @friend.email %>)
+
+Crie sua campanha também
+Se conecte com a gente
+Facebook ou  Twitter
+Um Projeto do Bootcamp OneBitCode

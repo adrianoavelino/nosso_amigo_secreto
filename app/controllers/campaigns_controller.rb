@@ -47,7 +47,7 @@ class CampaignsController < ApplicationController
         msgError = 'A campanha precisa de pelo menos 3 pessoas'
         format.json { render json: msgError, status: :unprocessable_entity }
       else
-        # CampaignRaffleJob.perform_later @campaign
+        CampaignRaffleJob.perform_later @campaign
         format.json { render json: true }
       end
     end

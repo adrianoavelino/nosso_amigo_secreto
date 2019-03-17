@@ -39,4 +39,5 @@ Rails.application.configure do
 
   # Raises error for missing translations
   # config.action_view.raise_on_missing_translations = true
+  config.path_image_logo = 'http://localhost:3000/assets/logo-c644389c98d7a431a5db754c47fa93f3a82e7b9d2d413466328dea179f4d9995.png'
 end

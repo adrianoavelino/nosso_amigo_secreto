@@ -6,10 +6,10 @@
       <columns large="2">
       </columns>
       <columns large="1" class="center">
-        <img src="http://localhost:3000/assets/logo.png" alt="">
       </columns>
       <columns large="8">
-        <h4>Nosso Amigo Secreto</h4>
+        <%= image_tag("logo.png", class: "logo-img") %>
+        <h4 class="text-center">Nosso Amigo Secreto</h4>
       </columns>
     </row>
   <!-- </center> -->
@@ -30,7 +30,7 @@
   <row>
     <columns>
       <spacer size="4"></spacer>
-      <p class="text-center">Olá <%= @member.name %>, o <%= @campaign.user.name %> criou uma campanha de amigo secreto no site Nosso Amigo Secreto e incluiu você. Logo a baixo voce pode saber com querm saiu.</p>
+      <p class="text-center">Olá <%= @member.name %>, o <%= @campaign.user.name %> criou uma campanha de amigo secreto no site Nosso Amigo Secreto e incluiu você. Logo a baixo voce pode saber com quem saiu.</p>
       <spacer size="8"></spacer>
       <p class="text-center">Seu amigo secreto é:&nbsp;<b><u><%= @friend.name %></u></b></p>
       <spacer size="8"></spacer>

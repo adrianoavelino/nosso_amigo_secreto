@@ -3,6 +3,8 @@ $(document).on 'turbolinks:load', ->
     if e.which == 13 && valid_email($( "#member_email" ).val()) && $( "#member_name" ).val() != ""
       $('.new_member').submit()
 
+  up()
+
   $('#member_email, #member_name').bind 'blur', ->
     if valid_email($( "#member_email" ).val()) && $( "#member_name" ).val() != ""
       $('.new_member').submit()
@@ -14,7 +16,9 @@ $(document).on 'turbolinks:load', ->
         data: {}
         success: (data, text, jqXHR) ->
           Materialize.toast('Membro removido', 4000, 'green')
-          $('#member_' + e.currentTarget.id).remove()
+          # debugger
+          # $('#member_' + e.currentTarget.id).remove()
+          $('#member_update_' + e.currentTarget.id).remove()
         error: (jqXHR, textStatus, errorThrown) ->
           Materialize.toast('Problema na remoção de membro', 4000, 'red')
     return false
@@ -39,14 +43,15 @@ valid_email = (email) ->
 
 insert_member = (id, name, email) ->
   $('.member_list').append(
-    '<div class="member" id="member_' + id + '">' +
+    '<form class="member" id="member_update_' + id + '">' +
       '<div class="row">' +
+        '<input id="id" type="hidden" value="' + id + '">' +
         '<div class="col s12 m5 input-field">' +
-          '<input id="name" type="text" class="validate" value="' + name + '">' +
+          '<input id="name" name="name" type="text" class="validate" value="' + name + '">' +
           '<label for="name" class="active">Nome</label>' +
         '</div>' +
         '<div class="col s12 m5 input-field">' +
-          '<input id="email" type="email" class="validate" value="' + email + '">' +
+          '<input id="email" name="email" type="email" class="validate" value="' + email + '">' +
           '<label for="email" class="active" data-error="Formato incorreto">Email</label>' +
         '</div>' +
         '<div class="col s3 offset-s3 m1 input-field">' +
@@ -58,4 +63,70 @@ insert_member = (id, name, email) ->
           '</a>' +
         '</div>' +
       '</div>' +
-    '</div>')
+    '</form>')
+  fe = '#member_update_' + id + ' #email'
+  fn = '#member_update_' + id + ' #name'
+  console.log fe + ', '+ fn
+  $('body').on 'blur', fe + ', '+ fn  , (e) ->
+    console.log 'okkk' + valid_email($( fe ).val())
+    console.log 'okkk' +  $( fn ).val() != ""
+    if valid_email($( fe ).val()) && $( fn ).val() != ""
+      console.log 'atualiza o campos'
+      $('#member_update_' + id).on 'submit', (e) ->
+        e.preventDefault()
+        element = $(this).children().find('input')
+        id = element[0].value
+        name = element[1].value
+        email = element[2].value
+        $.ajax '/members/'+ id,
+            type: 'PUT'
+            dataType: 'json',
+            data: {id: id, member: {id: id, name: name, email: email}}
+            success: (data, text, jqXHR) ->
+              Materialize.toast('Membro atualizado', 4000, 'green')
+            error: (jqXHR, textStatus, errorThrown) ->
+              Materialize.toast('Problema na atualização de membro', 4000, 'red')
+        return false
+      $('#member_update_' + id).each (mem) ->
+        idForm = $(this).attr('id')
+        $(this).keypress (e1) ->
+          if e1.which == 13
+            $(this).submit()
+
+
+
+
+up = () ->
+  $("[id^='member_update_']").each (mem) ->
+    idForm = $(this).attr('id')
+    $(this).keypress (e1) ->
+      if e1.which == 13
+        $(this).submit()
+
+
+
+    #testar esse blur: $(".member_update input[type=text], .member_update input[type=email]")
+    fe = '#' + idForm + ' #email'
+    fn = '#' + idForm + ' #name'
+    console.log fe + ', '+ fn
+    $('body').on 'blur', '#' + idForm + '#name'  , (e) ->
+      # console.log $(this).attr('value')
+    # $(fe + ','+ fn).on 'blur', ->
+      if valid_email($( fe ).val()) && $( fn ).val() != ""
+        $(this).parent().parent().parent().parent().submit()
+
+    $("#"+idForm).on 'submit', (e) ->
+      e.preventDefault()
+      element = $(this).children().find('input')
+      id = element[0].value
+      name = element[1].value
+      email = element[2].value
+      $.ajax '/members/'+ id,
+          type: 'PUT'
+          dataType: 'json',
+          data: {id: id, member: {id: id, name: name, email: email}}
+          success: (data, text, jqXHR) ->
+            Materialize.toast('Membro atualizado', 4000, 'green')
+          error: (jqXHR, textStatus, errorThrown) ->
+            Materialize.toast('Problema na atualização de membro', 4000, 'red')
+      return false

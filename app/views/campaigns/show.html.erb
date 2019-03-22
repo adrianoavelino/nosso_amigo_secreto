@@ -69,9 +69,20 @@
                       <i class="material-icons icon ">visibility</i>
                     </div>
                     <div class="col s3 m1 input-field">
-                      <a href="#" class="remove_member" id="<%= m.id %>">
-                        <i class="material-icons icon">delete</i>
+                      <a href="#modal<%= m.id %>"  >
+                          <i class="material-icons icon">delete</i>
                       </a>
+                      <div id="modal<%= m.id  %>" class="modal">
+                        <div class="modal-content">
+                          <h4>Excluir Membro</h4>
+                          <p>Deseja deletar o membro?</p>
+                        </div>
+                        <div class="modal-footer">
+                          <div class="col s6"></div>
+                          <div class="col s3"><a class="modal-close waves-effect waves-light btn grey">Cancelar</a></div>
+                          <div class="col s3"><a class="modal-close waves-effect waves-green btn waves-light red remove_member" id="<%= m.id %>">Deletar</a></div>
+                        </div>
+                      </div>
                     </div>
                   </div>
                 </div>

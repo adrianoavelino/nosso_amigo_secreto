@@ -44,6 +44,7 @@ $(document).on 'turbolinks:load', ->
       update_member.call(this)
 
   $('body').on 'click', 'a.remove_member', (e) ->
+    e.preventDefault()
     $.ajax '/members/'+ e.currentTarget.id,
         type: 'DELETE'
         dataType: 'json',
@@ -54,6 +55,8 @@ $(document).on 'turbolinks:load', ->
         error: (jqXHR, textStatus, errorThrown) ->
           Materialize.toast('Problema na remoção de membro', 4000, 'red')
     return false
+
+  $('.modal').modal();
 
 valid_email = (email) ->
   /^([a-zA-Z0-9_.+-])+\@(([a-zA-Z0-9-])+\.)+([a-zA-Z0-9]{2,4})+$/.test(email)
@@ -75,12 +78,26 @@ append_member = (id, name, email) ->
           '<i class="material-icons icon">visibility</i>' +
         '</div>' +
         '<div class="col s3 m1 input-field">' +
-          '<a href="#" class="remove_member" id="' + id + '">' +
-            '<i class="material-icons icon">delete</i>' +
-          '</a>' +
+            '<a href="#modal' + id + '"  >' +
+                '<i class="material-icons icon">delete</i>' +
+            '</a>' +
+            '<div id="modal' + id + '" class="modal">' +
+              '<div class="modal-content">' +
+                '<h4>Excluir Membro</h4>' +
+                '<p>Deseja deletar o membro?</p>' +
+              '</div>' +
+              '<div class="modal-footer">' +
+                '<div class="col s6"></div>' +
+                '<div class="col s3"><a class="modal-close waves-effect waves-light btn grey">Cancelar</a></div>' +
+                '<div class="col s3">' +
+                  '<a class="modal-close waves-effect waves-green btn waves-light red remove_member" id="' + id + '">Deletar</a>' +
+                '</div>' +
+              '</div>' +
+            '</div>' +
         '</div>' +
       '</div>' +
     '</form>')
+  $('.modal').modal()
 
 update_member = () ->
   inputs = $(this).children().find('input')

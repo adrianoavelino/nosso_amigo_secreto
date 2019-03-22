@@ -13,25 +13,13 @@ $(document).on 'turbolinks:load', ->
         dataType: 'json',
         data: $(".new_member").serialize()
         success: (data, text, jqXHR) ->
-          insert_member(data['id'], data['name'],  data['email'])
+          append_member(data['id'], data['name'],  data['email'])
           $('#member_name, #member_email').val("")
           $('#member_name').focus()
           Materialize.toast('Membro adicionado', 4000, 'green')
           $("#member_update_"+data['id']).on 'submit', (e) ->
             e.preventDefault()
-            element = $(this).children().find('input')
-            id = element[0].value
-            name = element[1].value
-            email = element[2].value
-            $.ajax '/members/'+ id,
-                type: 'PUT'
-                dataType: 'json',
-                data: {id: id, member: {id: id, name: name, email: email}}
-                success: (data, text, jqXHR) ->
-                  Materialize.toast('Membro atualizado', 4000, 'green')
-                error: (jqXHR, textStatus, errorThrown) ->
-                  Materialize.toast('Problema na atualização de membro', 4000, 'red')
-            return false
+            update_member.call(this)
         error: (jqXHR, textStatus, errorThrown) ->
           Materialize.toast('Problema na hora de incluir membro', 4000, 'red')
     return false
@@ -40,7 +28,6 @@ $(document).on 'turbolinks:load', ->
     form = $(this).parent().parent().parent()
     name = form.find('input[type=text]').val()
     email = form.find('input[type=email]').val()
-    id = form.find('input[name=id]').val()
     if e.which == 13  && name != "" && valid_email(email)
       form.submit()
 
@@ -48,27 +35,13 @@ $(document).on 'turbolinks:load', ->
     form = $(this).parent().parent().parent()
     name = form.find('input[type=text]').val()
     email = form.find('input[type=email]').val()
-    id = form.find('input[name=id]').val()
     if name != "" && valid_email(email)
       form.submit()
 
   $("[id^='member_update_']").each (mem) ->
-    form = "#" + $(this).attr('id')
-    $(form).on 'submit', (e) ->
+    $(this).on 'submit', (e) ->
       e.preventDefault()
-      element = $(this).children().find('input')
-      id = element[0].value
-      name = element[1].value
-      email = element[2].value
-      $.ajax '/members/'+ id,
-          type: 'PUT'
-          dataType: 'json',
-          data: {id: id, member: {id: id, name: name, email: email}}
-          success: (data, text, jqXHR) ->
-            Materialize.toast('Membro atualizado', 4000, 'green')
-          error: (jqXHR, textStatus, errorThrown) ->
-            Materialize.toast('Problema na atualização de membro', 4000, 'red')
-      return false
+      update_member.call(this)
 
   $('body').on 'click', 'a.remove_member', (e) ->
     $.ajax '/members/'+ e.currentTarget.id,
@@ -85,7 +58,7 @@ $(document).on 'turbolinks:load', ->
 valid_email = (email) ->
   /^([a-zA-Z0-9_.+-])+\@(([a-zA-Z0-9-])+\.)+([a-zA-Z0-9]{2,4})+$/.test(email)
 
-insert_member = (id, name, email) ->
+append_member = (id, name, email) ->
   $('.member_list').append(
     '<form class="member" id="member_update_' + id + '">' +
       '<div class="row">' +
@@ -108,3 +81,18 @@ insert_member = (id, name, email) ->
         '</div>' +
       '</div>' +
     '</form>')
+
+update_member = () ->
+  inputs = $(this).children().find('input')
+  id = inputs[0].value
+  name = inputs[1].value
+  email = inputs[2].value
+  $.ajax '/members/'+ id,
+      type: 'PUT'
+      dataType: 'json',
+      data: {id: id, member: {id: id, name: name, email: email}}
+      success: (data, text, jqXHR) ->
+        Materialize.toast('Membro atualizado', 4000, 'green')
+      error: (jqXHR, textStatus, errorThrown) ->
+        Materialize.toast('Problema na atualização de membro', 4000, 'red')
+  return false

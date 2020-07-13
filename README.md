@@ -1,24 +1,41 @@
-# README
+# Noso amigo secreto
+Terceiro aplicativo desenvolvido durante o Bootcamp do Onebicode
 
-This README would normally document whatever steps are necessary to get the
-application up and running.
+<p>
+<img alt="GitHub top language" src="https://img.shields.io/github/languages/top/adrianoavelino/nosso_amigo_secreto">
+<a href="https://github.com/adrianoavelino">
+    <img alt="Made by" src="https://img.shields.io/badge/made%20by-adriano%20avelino-gree">
+</a>
+<img alt="Repository size" src="https://img.shields.io/github/repo-size/adrianoavelino/nosso_amigo_secreto">
+<a href="https://github.com/EliasGcf/readme-template/commits/master">
+<img alt="GitHub last commit" src="https://img.shields.io/github/last-commit/adrianoavelino/nosso_amigo_secreto">
+</a>
+</p>
 
-Things you may want to cover:
+## Tecnologias
+- ruby
+- rails
+- docker
+- docker-compose
+- postgresql
 
-* Ruby version
+## Começando
+```sh
+#clone  projeto
+git clone https://github.com/adrianoavelino/nosso_amigo_secreto.git
 
-* System dependencies
+#entre no diretório
+cd nosso_amigo_secreto
 
-* Configuration
+#construa o contâiner
+docker-compose build
 
-* Database creation
 
-* Database initialization
+```
 
-* How to run the test suite
+## Teste
 
-* Services (job queues, cache servers, search engines, etc.)
+## Requisitos
 
-* Deployment instructions
+## Autor
 
-* ...
